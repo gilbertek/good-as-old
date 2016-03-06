@@ -10,22 +10,40 @@ import UIKit
 
 class ProductsTableViewController: UITableViewController {
     
-    var productNames: [String]?
+    var products: [Product]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        productNames = [
-            "1907 Wall Set",
-            "1021 Dial Phone",
-            "1937 Desk Set",
-            "1984 Motorola Portable"
-        ]
+        let produnct1 = Product()
+        let produnct2 = Product()
+        let produnct3 = Product()
+        let produnct4 = Product()
+        
+        produnct1.name = "1907 Wall Set"
+        produnct1.productImage = "phone-fullscreen1"
+        produnct1.cellImage = "image-cell1"
+        
+        produnct2.name = "1021 Dial Phone"
+        produnct2.productImage = "phone-fullscreen2"
+        produnct2.cellImage = "image-cell2"
+        
+        produnct3.name = "1937 Desk Set"
+        produnct3.productImage = "phone-fullscreen3"
+        produnct3.cellImage = "image-cell3"
+        
+        produnct4.name = "1907 Wall Set"
+        produnct4.productImage = "phone-fullscreen4"
+        produnct4.cellImage = "image-cell4"
+        
+        products = [
+            produnct1,
+            produnct2, produnct3, produnct4 ]
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let pNames = productNames {
-            return pNames.count
+        if let p = products {
+            return p.count
         }
         
         return 0
@@ -34,11 +52,14 @@ class ProductsTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("ProductCell", forIndexPath: indexPath)
         
-        let productName = productNames?[indexPath.row]
+        let product = products?[indexPath.row]
         
-        if let pName = productName {
-            cell.textLabel?.text = pName
-            cell.imageView?.image = UIImage(named: "image-cell\(indexPath.row + 1) ")
+        if let p = product {
+            cell.textLabel?.text = p.name
+            
+            if let i = p.cellImage {
+                cell.imageView?.image = UIImage(named: i)
+            }
         }
         
         return cell
@@ -47,7 +68,13 @@ class ProductsTableViewController: UITableViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ShowProduct" {
             let productVC = segue.destinationViewController as? ProductViewController
-            productVC?.productName = "Really Old Phone"
+            
+            guard let cell = sender as? UITableViewCell,
+                let indexPath = tableView.indexPathForCell(cell) else {
+                    return
+            }
+            
+            productVC?.product = products?[indexPath.row]
             
         }
     }
